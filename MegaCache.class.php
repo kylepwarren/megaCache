@@ -30,12 +30,15 @@ class MegaCache{
 		$zip->open($nodePath);			
 		$packageWrap = $zip->getFromName($path);
 		$package = array();
+		
 		if($packageWrap != false){
 			$package = unserialize($packageWrap);
 			//$archiveTime = $package['archiveTime'];
 			//$packageContents = $package['contents'];
 			$ageSeconds = time() - $package['archiveTime'];
+			//echo "{$ageSeconds} < {$maxAgeSeconds} \n";
 			if($maxAgeSeconds == false || $maxAgeSeconds <= 0 || $ageSeconds < $maxAgeSeconds){
+				
 				//$contents = $package['contents'];
 				$packageHits=1;
 				if(isset($package['hits']) && $package['hits'] > 0){
@@ -51,6 +54,7 @@ class MegaCache{
 				//remove it? diskspace unlmited, but still performance
 				//wait wait wait wait, will almost definitely be updated.. hmm...
 				$zip->deleteName($path);
+				$package['contents'] = false;
 				//screw it
 			}
 		}
